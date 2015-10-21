@@ -1,0 +1,32 @@
+{
+  "name": "ng-base64",
+  "version": "0.0.1",
+  "authors": [
+    "athr <atanaschristov@gmail.com>"
+  ],
+  "description": "angular service for ecoding/decoding blobs/strings into base64 format",
+  "main": "dist/ng-base64.js",
+  "moduleType": [],
+  "keywords": [
+    "encode",
+    "decode",
+    "base64",
+    "string",
+    "blob",
+    "angular",
+    "service"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular": "~1.4.7",
+    "angular-mocks": "~1.4.7"
+  }
+}
