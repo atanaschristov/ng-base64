@@ -111,7 +111,7 @@
 					reader.readAsDataURL(blob);
 				} catch (e) {
 					if (typeof callback !== 'function') {
-						deferred.reject(e);
+						deffered.reject(e);
 						return deffered.promise;
 					} else {
 						callback(e, null);
@@ -140,7 +140,7 @@
 					// separate out the mime component
 					mimeString = blobParts[0].split(':')[1].split(';')[0];
 				} else {
-					var byteString = atob(blobParts[0]);
+					byteString = atob(blobParts[0]);
 				}
 
 				// write the bytes of the string to an ArrayBuffer

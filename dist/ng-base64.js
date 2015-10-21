@@ -8,14 +8,12 @@
 	}
 
 	var Base64 = function ($q) {
-		// console.log('Base64');
-
 		var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef' +
 			'ghijklmnopqrstuvwxyz0123456789+/=';
 
 		var self = {
 			// Taken from http://ntt.cc/2008/01/19/base64-encoder-decoder-with-javascript.html
-			encodeFromStr: function (string) {
+			encodeStr: function (string) {
 				var deffered = $q.defer(),
 					output = '',
 					chr1, chr2, chr3 = '',
@@ -31,14 +29,13 @@
 					enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
 					enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
 					enc4 = chr3 & 63;
-					console.log('chr1, chr2, chr3', chr1, chr2, chr3);
 
 					if (isNaN(chr2)) {
 						enc3 = enc4 = 64;
 					} else if (isNaN(chr3)) {
 						enc4 = 64;
 					}
-					console.log('enc1,enc2,enc3,enc4', enc1, enc2, enc3, enc4);
+
 					output = output +
 						keyStr.charAt(enc1) +
 						keyStr.charAt(enc2) +
@@ -63,9 +60,7 @@
 				var base64test = /[^A-Za-z0-9\+\/\=]/g;
 				if (base64test.exec(input)) {
 					var err = 'There were invalid base64 characters in the input text.\n' +
-						'Valid base64 characters are A-Z, a-z, 0-9, "+", "/",and "="\n' +
-						'Expect errors in decoding.';
-					// console.log(err);
+						'Valid base64 characters are A-Z, a-z, 0-9, "+", "/",and "="\n';
 					deffered.reject(err);
 					return deffered.promise;
 				}
@@ -99,21 +94,29 @@
 				return deffered.promise;
 			},
 			// Taken from StackOverflow
-			// 
-			encodeFromBlobAsync: function (blob, callback) {
+			encodeBlob: function (blob, callback) {
 				var deffered = $q.defer(),
 					reader = new FileReader();
-
 				reader.onload = function () {
-					var dataUrl = reader.result;
-					var base64 = dataUrl.split(',')[1];
+					var dataUrl = reader.result,
+						base64 = dataUrl.split(',')[1];
+					// console.log(reader.result);
 					if (typeof callback !== 'function') {
 						deffered.resolve(base64);
 					} else {
-						callback(base64);
+						callback(null, base64);
 					}
 				};
-				reader.readAsDataURL(blob);
+				try {
+					reader.readAsDataURL(blob);
+				} catch (e) {
+					if (typeof callback !== 'function') {
+						deffered.reject(e);
+						return deffered.promise;
+					} else {
+						callback(e, null);
+					}
+				}
 
 				if (typeof callback !== 'function') {
 					return deffered.promise;
@@ -122,14 +125,23 @@
 			// taken and modified from http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
 			decodeBlob: function (input) {
 				var deffered = $q.defer(),
-					resultBlob;
-				// convert base64 to raw binary data held in a string
-				// doesn't handle URLEncoded bas64Data - see SO answer #6850276 for code that does this
-				var byteString = atob(input.split(',')[1]);
+					resultBlob, mimeString, byteString;
 
-				// separate out the mime component
-				var mimeString = input.split(',')[0].split(':')[1].split(';')[0];
-				// console.log(mimeString);
+				if (typeof input !== 'string') {
+					deffered.reject('Wrong format');
+					return deffered.promise;
+				}
+
+				var blobParts = input.split(',');
+				if (blobParts.length > 1) {
+					// convert base64 to raw binary data held in a string
+					// doesn't handle URLEncoded bas64Data - see SO answer #6850276 for code that does this
+					byteString = atob(blobParts[1]);
+					// separate out the mime component
+					mimeString = blobParts[0].split(':')[1].split(';')[0];
+				} else {
+					byteString = atob(blobParts[0]);
+				}
 
 				// write the bytes of the string to an ArrayBuffer
 				var ab = new ArrayBuffer(byteString.length);
@@ -162,14 +174,11 @@
 						// We're screwed, blob constructor unsupported entirely
 						resultBlob = false;
 						deffered.reject('Error: blob constructor is not supported');
+						return deffered.promise;
 					}
 				}
 
-				if (!resultBlob) {
-					deffered.reject('Failed to decode');
-				} else {
-					deffered.resolve(resultBlob);
-				}
+				deffered.resolve(resultBlob);
 				return deffered.promise;
 			}
 		};
