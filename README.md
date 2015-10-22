@@ -33,8 +33,36 @@ Than use it in an angular service or controller:
 
 Than the service can be used:
 
-## Examples
+## REal life examples
 
+### Encoding strings
+```
+			var getToken = function () {
+				return Base64.encodeStr('userName:thisIsPass').then(function (encoded) {
+					var data = {
+							'grant_type': 'client_credentials'
+						},
+						reqOptions = {
+							headers: {
+								'Authorization': 'Basic ' + encoded,
+							}
+						};
+
+					return apiRequest('post', data, '/token', reqOptions);
+				});
+			},
 ```
 
+### Encoding a blob
+```
+	var dummy = function () {
+		var blob = new Blob(['<div><h1>hey!</h1></div>'], {
+			type: 'text/html'
+		});
+		Base64.encodeBlob(blob).then(function(encoded) {
+			/* Do sth */
+		},function(err) {
+			/* Fail correctly */
+		});
+	}
 ```
