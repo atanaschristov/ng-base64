@@ -33,12 +33,12 @@ Than use it in an angular service or controller:
 
 Than the service can be used:
 
-## REal life examples
+## Real life examples
 
-### Encoding strings
+### Encoding from a strings
 ```
 			var getToken = function () {
-				return Base64.encodeStr('userName:thisIsPass').then(function (encoded) {
+				return Base64.encodeStr('userName:password').then(function (encoded) {
 					var data = {
 							'grant_type': 'client_credentials'
 						},
@@ -53,9 +53,11 @@ Than the service can be used:
 			},
 ```
 
-### Encoding a blob
+### Encoding from a blob
 ```
 	var dummy = function () {
+		// NOTE!! constructing Blob like that may not work for your browser.
+		// It will work with newest browsers
 		var blob = new Blob(['<div><h1>hey!</h1></div>'], {
 			type: 'text/html'
 		});
@@ -66,3 +68,36 @@ Than the service can be used:
 		});
 	}
 ```
+
+### Decoding into a blob
+There was a case when I recieved a base64 encoded audio file from the server. This is how I played it: 
+
+```
+	var playBlob = function(audioBlob,audioId) {
+		if(audioBlob instanceof Blob) {
+			// console.log("Play the record");
+			var url = (window.URL || window.webkitURL).createObjectURL(audioBlob);
+			if(player) {
+				player.pause();
+			} else {
+				player = new window.Audio();
+			}
+			player.src = url;
+			player.play();
+			player.onended = function(e) {
+				$scope.$emit('audioRecordFinished',audioId);
+			};
+		} else {
+			console.log('Error: Wrong audio data type');
+		}
+	};
+
+	var playBase64 = function(base64Str,audioId) {
+		return Base64.decodeBlob(base64Str).then(function(audioBlob) {
+			playBlob(audioBlob,audioId);
+		}, function(err) {
+			// throw err or sth
+		})
+	};
+```
+
