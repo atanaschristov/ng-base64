@@ -2,7 +2,7 @@
   "name": "ng-base64",
   "version": "0.0.1",
   "description": "angular service for ecoding/decoding blobs/strings into base64 format",
-  "main": "index.js",
+  "main": "src/ng-base64.js",
   "directories": {
     "test": "tests"
   },
@@ -10,9 +10,9 @@
     "test": "grunt test"
   },
   "keywords": [
+    "base64",
     "encode",
     "decode",
-    "base64",
     "string",
     "blob",
     "angular",
@@ -20,6 +20,10 @@
   ],
   "author": "athr",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atanaschristov/ng-base64"
+  },
   "dependencies": {},
   "devDependencies": {
     "chai": "^3.3.0",

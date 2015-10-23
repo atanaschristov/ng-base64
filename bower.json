@@ -8,18 +8,21 @@
   "main": "dist/ng-base64.js",
   "moduleType": [],
   "keywords": [
+    "base64",
     "encode",
     "decode",
-    "base64",
     "string",
     "blob",
     "angular",
     "service"
   ],
-  "license": "MIT",
+  "license": "ISC",
   "homepage": "",
   "ignore": [
     "**/.*",
+    "karma.conf.js",
+    ".jshintrc",
+    "src",
     "node_modules",
     "bower_components",
     "test",
