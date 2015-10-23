@@ -1,7 +1,7 @@
-# Angular service for encoding/decoding regular strings and blobs into base64 strings 
+# Angular service for base64 encoding/decoding 
 
 The service is a pack of bits and pieces of code found mainly at stackoverflow, to handle base64 encoding and decoding.
-It supports both strings and blobs and return promises.
+It supports both strings and blobs. Every method returns a promise.
 
 ## Dependencies
 
